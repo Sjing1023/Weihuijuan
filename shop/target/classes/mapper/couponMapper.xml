@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ouweicong.shop.dao.CouponDao">
+    <!--  查询优惠劵列表  -->
+    <select id="getCouponList" resultType="com.ouweicong.common.pojo.Coupon">
+        select * from `coupon`
+    </select>
+
+
+    <!--  添加优惠券  -->
+    <insert id="addCoupon">
+
+        INSERT INTO `coupon`
+        (
+        <foreach collection="coupon.entrySet()" item="value" index="key" separator=" , ">
+            <if test="value!=null">
+                `${key}`
+            </if>
+        </foreach>
+        )
+        VALUES
+        (
+        <foreach collection="coupon.entrySet()" item="value" index="key" separator=" , ">
+            <if test="value!=null">
+                '${value}'
+            </if>
+        </foreach>
+        )
+    </insert>
+
+    <!--  删除优惠券  -->
+    <update id="delCoupon" >
+        UPDATE `coupon` SET `sys_state` = 1 WHERE couponId = '${couponId}'
+    </update>
+</mapper>

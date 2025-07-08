@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ouweicong.order.dao.OrderDao">
+    <!--  新增订单  -->
+    <insert id="addOrder">
+        INSERT INTO `order` SET
+        <foreach collection="order.entrySet()" item="value" index="key" separator=",">
+            <if test="value != null">
+                `${key}` = #{value}
+            </if>
+        </foreach>
+    </insert>
+
+    <!--  根据订单Id查询订单信息  -->
+    <select id="getOrderInfoByOrderId" resultType="com.ouweicong.common.pojo.Order">
+        SELECT * FROM `order`
+        <where>
+            `orderId` = #{orderId} AND `sys_state` = 0
+        </where>
+    </select>
+
+    <!--  支付成功  -->
+    <update id="paySuccess">
+        UPDATE `order` SET `status`= 1, `pay_time`= CURRENT_TIMESTAMP
+        <where>
+            `orderId` = #{orderId} AND `sys_state` = 0
+        </where>
+    </update>
+
+    <select id="getOrderList">
+        SELECT * FROM `order`
+        <where>
+            `userId` = #{userId} AND `sys_state` = 0
+        </where>
+        ORDER BY `create_time` DESC
+    </select>
+
+    <select id="getOrderInfoByQRcode" resultType="com.ouweicong.common.pojo.Order">
+        SELECT * FROM `order`
+        <where>
+            `QRcode` = #{QRcode} AND `sys_state` = 0
+        </where>
+    </select>
+
+    <update id="WriteOffGoods">
+        UPDATE `order` SET `status`= 2, `use_time`= CURRENT_TIMESTAMP
+        <where>
+            `status`= 1 AND `QRcode` = #{QRcode} AND `sys_state` = 0
+        </where>
+    </update>
+</mapper>

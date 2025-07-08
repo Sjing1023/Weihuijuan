@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ouweicong.shop.dao.ShopDao">
+    <select id="selectGoodsJoinShop" resultType="com.ouweicong.common.pojo.Goods">
+        SELECT goods.* FROM shop INNER JOIN goods ON shop.shopId = goods.shopId
+        <where>
+            goods.sys_state!=1 AND shop.sys_state!=1
+        </where>
+        ORDER BY `create_time` DESC
+    </select>
+</mapper>

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ouweicong.shop.dao.GoodsDao">
+    <!--  查询商品列表  -->
+    <select id="getGoodsList" resultType="com.ouweicong.common.pojo.Goods">
+        select * from `goods`
+        <where>
+            `sys_state` = 0
+            <if test="shopId != null">
+                AND `shopId` = #{shopId}
+            </if>
+        </where>
+        ORDER BY `create_time` DESC
+    </select>
+
+    <!--  添加商品  -->
+    <insert id="addGoods">
+        INSERT INTO `goods`
+        (
+        <foreach collection="goods.entrySet()" item="value" index="key" separator=" , ">
+            <if test="value!=null">
+                `${key}`
+            </if>
+        </foreach>
+        )
+        VALUES
+        (
+        <foreach collection="goods.entrySet()" item="value" index="key" separator=" , ">
+            <if test="value!=null">
+                '${value}'
+            </if>
+        </foreach>
+        )
+    </insert>
+
+    <!--  根据店铺id获取所属商品  -->
+    <select id="queryGoodsInfoByGoodsId" resultType="com.ouweicong.common.pojo.Goods" >
+        SELECT * FROM `goods` WHERE `goodsId` = '${goodsId}' AND  `sys_state` = 0
+    </select>
+
+    <!--  删除商品  -->
+    <update id="delGoods" >
+        UPDATE `goods` SET `sys_state` = 1 WHERE goodsId = '${goodsId}'
+    </update>
+
+    <!-- 修改商品 -->
+    <update id="modifyGoods">
+        UPDATE `goods` set
+
+        <foreach collection="goods.entrySet()" item="value" index="key" separator=" , ">
+            <if test="value!=null and key!='goodsId'">
+                `${key}` = '${value}'
+            </if>
+        </foreach>
+        WHERE `goodsId` = '${goods.get("goodsId")}' and `sys_state` = 0
+    </update>
+
+    <!--  根据商店id获取所属商品  -->
+    <select id="queryGoodsInfoByShopId" resultType="com.ouweicong.common.pojo.Goods">
+        select * from `goods` WHERE `shopId` = '${shopId}'
+    </select>
+
+    <!--  查询商品是否存在
+    <select id="goodsIsExists" resultType="string">
+        SELECT COUNT(*) FROM `goods` WHERE `goodsId`= '${goodsId}'
+    </select> -->
+</mapper>
